@@ -26,7 +26,7 @@ def wrapper(args):
 
     gff3cols=["seqid","source","type","start","end","score","strand","phase","attributes"]
 
-    # load base annotations
+    # # load base annotations
     # print(">>>loading base annotations")
     # real_baseDF = pd.read_csv(base_dir_data+"ALL.combined.IDs.olny.in.ALL.combined.true.gtf",sep="\t",names=gff3cols)
     # real_baseDF = real_baseDF[real_baseDF["type"]=="transcript"].reset_index(drop=True)
@@ -396,7 +396,8 @@ def wrapper(args):
     #                 out_dir+"res_distrib.real.sample"+str(i)+".fasta",
     #                 out_dir+"res_distrib.real.sample"+str(i)+".exp",
     #                 str(readlen),
-    #                 out_dir+"res_distrib.real.sample"+str(i)+"/"]
+    #                 out_dir+"res_distrib.real.sample"+str(i)+"/",
+    #                 str(int(args.paired))]
     #     subprocess.call(cmd_real)
         
     #     if not os.path.exists(out_dir+"res_distrib.nonint.sample"+str(i)):
@@ -405,7 +406,8 @@ def wrapper(args):
     #                 out_dir+"res_distrib.nonint.sample"+str(i)+".fasta",
     #                 out_dir+"res_distrib.nonint.sample"+str(i)+".exp",
     #                 str(readlen),
-    #                 out_dir+"res_distrib.nonint.sample"+str(i)+"/"]
+    #                 out_dir+"res_distrib.nonint.sample"+str(i)+"/",
+    #                 str(int(args.paired))]
     #     subprocess.call(cmd_nonint)
         
     #     if not os.path.exists(out_dir+"res_distrib.int.sample"+str(i)):
@@ -414,7 +416,8 @@ def wrapper(args):
     #                 out_dir+"res_distrib.int.sample"+str(i)+".fasta",
     #                 out_dir+"res_distrib.int.sample"+str(i)+".exp",
     #                 str(readlen),
-    #                 out_dir+"res_distrib.int.sample"+str(i)+"/"]
+    #                 out_dir+"res_distrib.int.sample"+str(i)+"/",
+    #                 str(int(args.paired))]
     #     subprocess.call(cmd_int)
         
     #     if not os.path.exists(out_dir+"res_distrib.pol.sample"+str(i)):
@@ -423,7 +426,8 @@ def wrapper(args):
     #                 out_dir+"res_distrib.pol.sample"+str(i)+".fasta",
     #                 out_dir+"res_distrib.pol.sample"+str(i)+".exp",
     #                 str(readlen),
-    #                 out_dir+"res_distrib.pol.sample"+str(i)+"/"]
+    #                 out_dir+"res_distrib.pol.sample"+str(i)+"/",
+    #                 str(int(args.paired))]
     #     subprocess.call(cmd_pol)
 
     # # build salmon and hisat2 indices
@@ -449,105 +453,173 @@ def wrapper(args):
     #                  "-p",str(args.threads),
     #                  "-i",out_dir+"res_distrib.all.real"])
 
-    # # shuffle generated reads and create merged datasets for downstream analysis
-    # print(">>>shuffling reads and creating combinations")
-    # for i in range(num_samples):
-    #     print(i)
-    #     # shuffle real
-    #     shuffle_cmd = [args.shuffleReads,
-    #                    out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
-    #                    out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
-    #                    out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-    #                    out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
-    #     subprocess.call(shuffle_cmd)
-    #     # create a combination of real and nonint
-    #     if not os.path.exists(out_dir+"res_distrib.real_nonint.sample"+str(i)):
-    #         os.makedirs(out_dir+"res_distrib.real_nonint.sample"+str(i))
-    #     with open(out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
-    #                       out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_1.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     with open(out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
-    #                       out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_2.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     shuffle_cmd = [args.shuffleReads,
-    #                    out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.fasta",
-    #                    out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.fasta",
-    #                    out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-    #                    out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
-    #     subprocess.call(shuffle_cmd)
-    #     # create a combination of real and int
-    #     if not os.path.exists(out_dir+"res_distrib.real_int.sample"+str(i)):
-    #         os.makedirs(out_dir+"res_distrib.real_int.sample"+str(i))
-    #     with open(out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
-    #                       out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_1.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     with open(out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
-    #                       out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_2.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     shuffle_cmd = [args.shuffleReads,
-    #                    out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.fasta",
-    #                    out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.fasta",
-    #                    out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-    #                    out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
-    #     subprocess.call(shuffle_cmd)
-    #     # create a combination of real and polymerase
-    #     if not os.path.exists(out_dir+"res_distrib.real_pol.sample"+str(i)):
-    #         os.makedirs(out_dir+"res_distrib.real_pol.sample"+str(i))
-    #     with open(out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
-    #                       out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_1.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     with open(out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
-    #                       out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_2.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     shuffle_cmd = [args.shuffleReads,
-    #                    out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.fasta",
-    #                    out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.fasta",
-    #                    out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-    #                    out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
-    #     subprocess.call(shuffle_cmd)
-    #     # create a combination of all reads
-    #     if not os.path.exists(out_dir+"res_distrib.all.sample"+str(i)):
-    #         os.makedirs(out_dir+"res_distrib.all.sample"+str(i))
-    #     with open(out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
-    #                       out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_1.fasta",
-    #                       out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_1.fasta",
-    #                       out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_1.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     with open(out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
-    #         for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
-    #                       out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_2.fasta",
-    #                       out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_2.fasta",
-    #                       out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_2.fasta"]:
-    #             with open(fname) as infile:
-    #                 for line in infile:
-    #                     outfile.write(line)
-    #     shuffle_cmd = [args.shuffleReads,
-    #                    out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.fasta",
-    #                    out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.fasta",
-    #                    out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-    #                    out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
-    #     subprocess.call(shuffle_cmd)
+    # subprocess.call(["kallisto","index",
+    #                  "-i",out_dir+"res_distrib.all.real.kallisto",
+    #                  out_dir+"res_distrib.all.real.fasta"])
+
+    # shuffle generated reads and create merged datasets for downstream analysis
+    print(">>>shuffling reads and creating combinations")
+    for i in range(num_samples):
+        print(i)
+        # shuffle real
+        shuffle_cmd = []
+        if(args.paired):
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
+                           out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
+                           out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                           out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
+        else:
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.fasta",
+                           out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.shuffled.fasta"]
+        subprocess.call(shuffle_cmd)
+        # create a combination of real and nonint
+        if not os.path.exists(out_dir+"res_distrib.real_nonint.sample"+str(i)):
+            os.makedirs(out_dir+"res_distrib.real_nonint.sample"+str(i))
+        if args.paired:
+            with open(out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
+                              out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_1.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+            with open(out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
+                              out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_2.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        else:
+            with open(out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.fasta",
+                              out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        shuffle_cmd = []
+        if(args.paired):
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.fasta",
+                           out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.fasta",
+                           out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                           out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
+        else:
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01.fasta",
+                           out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01.shuffled.fasta"]
+        subprocess.call(shuffle_cmd)
+        # create a combination of real and int
+        if not os.path.exists(out_dir+"res_distrib.real_int.sample"+str(i)):
+            os.makedirs(out_dir+"res_distrib.real_int.sample"+str(i))
+        if args.paired:
+            with open(out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
+                              out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_1.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+            with open(out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
+                              out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_2.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        else:
+            with open(out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.fasta",
+                              out_dir+"res_distrib.int.sample"+str(i)+"/sample_01.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        shuffle_cmd = []
+        if(args.paired):
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.fasta",
+                           out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.fasta",
+                           out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                           out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
+        else:
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01.fasta",
+                           out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01.shuffled.fasta"]
+        subprocess.call(shuffle_cmd)
+        # create a combination of real and polymerase
+        if not os.path.exists(out_dir+"res_distrib.real_pol.sample"+str(i)):
+            os.makedirs(out_dir+"res_distrib.real_pol.sample"+str(i))
+        if args.paired:
+            with open(out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
+                              out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_1.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+            with open(out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
+                              out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_2.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        else:
+            with open(out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.fasta",
+                              out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        shuffle_cmd = []
+        if(args.paired):
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.fasta",
+                           out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.fasta",
+                           out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                           out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
+        else:
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01.fasta",
+                           out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01.shuffled.fasta"]
+        subprocess.call(shuffle_cmd)
+        # create a combination of all reads
+        if not os.path.exists(out_dir+"res_distrib.all.sample"+str(i)):
+            os.makedirs(out_dir+"res_distrib.all.sample"+str(i))
+        if args.paired:
+            with open(out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.fasta",
+                              out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_1.fasta",
+                              out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_1.fasta",
+                              out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_1.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+            with open(out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.fasta",
+                              out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01_2.fasta",
+                              out_dir+"res_distrib.int.sample"+str(i)+"/sample_01_2.fasta",
+                              out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01_2.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        else:
+            with open(out_dir+"res_distrib.all.sample"+str(i)+"/sample_01.fasta", 'w+') as outfile:
+                for fname in [out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.fasta",
+                              out_dir+"res_distrib.nonint.sample"+str(i)+"/sample_01.fasta",
+                              out_dir+"res_distrib.int.sample"+str(i)+"/sample_01.fasta",
+                              out_dir+"res_distrib.pol.sample"+str(i)+"/sample_01.fasta"]:
+                    with open(fname) as infile:
+                        for line in infile:
+                            outfile.write(line)
+        shuffle_cmd = []
+        if(args.paired):
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.fasta",
+                           out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.fasta",
+                           out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                           out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.shuffled.fasta"]
+        else:
+            shuffle_cmd = [args.shuffleReads,
+                           out_dir+"res_distrib.all.sample"+str(i)+"/sample_01.fasta",
+                           out_dir+"res_distrib.all.sample"+str(i)+"/sample_01.shuffled.fasta"]
+        subprocess.call(shuffle_cmd)
 
     # now align with hisat, assemble with stringtie and quantify with salmon
     print(">>>aligning,assemblying,quantifying")
@@ -561,9 +633,12 @@ def wrapper(args):
                      "-x",out_dir+"res_distrib.all.real",
                      "-p",str(args.threads),
                      "--rna-sensitive","-f",
-                     "-1",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                     "-2",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                      "-S",out_dir+"strg.real.sample"+str(i)+"/hisat.sam"]
+        if args.paired:
+            hisat_cmd.extend(["-1",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                              "-2",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            hisat_cmd.extend(["-U",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(hisat_cmd)
         # sort
         sort_cmd = ["samtools","sort",
@@ -574,7 +649,6 @@ def wrapper(args):
         # assemble
         strg_cmd = ["stringtie",
                     out_dir+"strg.real.sample"+str(i)+"/hisat.sorted.bam",
-                    "-t",
                     "-p",str(args.threads),
                     "-G",base_dir_data+"ALL.combined.IDs.olny.in.ALL.combined.true.gtf",
                     "-o",out_dir+"strg.real.sample"+str(i)+"/strg.gtf"]
@@ -583,9 +657,12 @@ def wrapper(args):
         salmon_cmd = ["salmon","quant","--validateMappings","-l","A",
                       "-i",out_dir+"res_distrib.all.real",
                       "-p",str(args.threads),
-                      "-1",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                      "-2",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                       "-o",out_dir+"slmn.real.sample"+str(i)]
+        if args.paired:
+            salmon_cmd.extend(["-1",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                               "-2",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            salmon_cmd.extend(["-r",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(salmon_cmd)
 
         # next perform the same analysis with real and non-intronic reads
@@ -596,9 +673,12 @@ def wrapper(args):
                      "-x",out_dir+"res_distrib.all.real",
                      "-p",str(args.threads),
                      "--rna-sensitive","-f",
-                     "-1",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                     "-2",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                      "-S",out_dir+"strg.real_nonint.sample"+str(i)+"/hisat.sam"]
+        if args.paired:
+            hisat_cmd.extend(["-1",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                              "-2",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            hisat_cmd.extend(["-U",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(hisat_cmd)
         # sort
         sort_cmd = ["samtools","sort",
@@ -609,7 +689,6 @@ def wrapper(args):
         # assemble
         strg_cmd = ["stringtie",
                     out_dir+"strg.real_nonint.sample"+str(i)+"/hisat.sorted.bam",
-                    "-t",
                     "-p",str(args.threads),
                     "-G",base_dir_data+"ALL.combined.IDs.olny.in.ALL.combined.true.gtf",
                     "-o",out_dir+"strg.real_nonint.sample"+str(i)+"/strg.gtf"]
@@ -618,9 +697,12 @@ def wrapper(args):
         salmon_cmd = ["salmon","quant","--validateMappings","-l","A",
                       "-i",out_dir+"res_distrib.all.real",
                       "-p",str(args.threads),
-                      "-1",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                      "-2",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                       "-o",out_dir+"slmn.real_nonint.sample"+str(i)]
+        if args.paired:
+            salmon_cmd.extend(["-1",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                               "-2",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            salmon_cmd.extend(["-r",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(salmon_cmd)
 
         # next perform the same analysis with real and intronic reads
@@ -631,9 +713,12 @@ def wrapper(args):
                      "-x",out_dir+"res_distrib.all.real",
                      "-p",str(args.threads),
                      "--rna-sensitive","-f",
-                     "-1",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                     "-2",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                      "-S",out_dir+"strg.real_int.sample"+str(i)+"/hisat.sam"]
+        if args.paired:
+            hisat_cmd.extend(["-1",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                              "-2",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            hisat_cmd.extend(["-U",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(hisat_cmd)
         # sort
         sort_cmd = ["samtools","sort",
@@ -644,7 +729,6 @@ def wrapper(args):
         # assemble
         strg_cmd = ["stringtie",
                     out_dir+"strg.real_int.sample"+str(i)+"/hisat.sorted.bam",
-                    "-t",
                     "-p",str(args.threads),
                     "-G",base_dir_data+"ALL.combined.IDs.olny.in.ALL.combined.true.gtf",
                     "-o",out_dir+"strg.real_int.sample"+str(i)+"/strg.gtf"]
@@ -653,9 +737,12 @@ def wrapper(args):
         salmon_cmd = ["salmon","quant","--validateMappings","-l","A",
                       "-i",out_dir+"res_distrib.all.real",
                       "-p",str(args.threads),
-                      "-1",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                      "-2",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                       "-o",out_dir+"slmn.real_int.sample"+str(i)]
+        if args.paired:
+            salmon_cmd.extend(["-1",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                               "-2",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            salmon_cmd.extend(["-r",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(salmon_cmd)
 
         # next perform the same analysis with real and polymerase reads
@@ -666,9 +753,12 @@ def wrapper(args):
                      "-x",out_dir+"res_distrib.all.real",
                      "-p",str(args.threads),
                      "--rna-sensitive","-f",
-                     "-1",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                     "-2",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                      "-S",out_dir+"strg.real_pol.sample"+str(i)+"/hisat.sam"]
+        if args.paired:
+            hisat_cmd.extend(["-1",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                              "-2",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            hisat_cmd.extend(["-U",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(hisat_cmd)
         # sort
         sort_cmd = ["samtools","sort",
@@ -679,7 +769,6 @@ def wrapper(args):
         # assemble
         strg_cmd = ["stringtie",
                     out_dir+"strg.real_pol.sample"+str(i)+"/hisat.sorted.bam",
-                    "-t",
                     "-p",str(args.threads),
                     "-G",base_dir_data+"ALL.combined.IDs.olny.in.ALL.combined.true.gtf",
                     "-o",out_dir+"strg.real_pol.sample"+str(i)+"/strg.gtf"]
@@ -688,9 +777,12 @@ def wrapper(args):
         salmon_cmd = ["salmon","quant","--validateMappings","-l","A",
                       "-i",out_dir+"res_distrib.all.real",
                       "-p",str(args.threads),
-                      "-1",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                      "-2",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                       "-o",out_dir+"slmn.real_pol.sample"+str(i)]
+        if args.paired:
+            salmon_cmd.extend(["-1",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                               "-2",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            salmon_cmd.extend(["-r",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(salmon_cmd)
 
         # next perform the same analysis with all reads
@@ -701,9 +793,12 @@ def wrapper(args):
                      "-x",out_dir+"res_distrib.all.real",
                      "-p",str(args.threads),
                      "--rna-sensitive","-f",
-                     "-1",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                     "-2",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                      "-S",out_dir+"strg.all.sample"+str(i)+"/hisat.sam"]
+        if args.paired:
+            hisat_cmd.extend(["-1",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                              "-2",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            hisat_cmd.extend(["-U",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(hisat_cmd)
         # sort
         sort_cmd = ["samtools","sort",
@@ -714,7 +809,6 @@ def wrapper(args):
         # assemble
         strg_cmd = ["stringtie",
                     out_dir+"strg.all.sample"+str(i)+"/hisat.sorted.bam",
-                    "-t",
                     "-p",str(args.threads),
                     "-G",base_dir_data+"ALL.combined.IDs.olny.in.ALL.combined.true.gtf",
                     "-o",out_dir+"strg.all.sample"+str(i)+"/strg.gtf"]
@@ -723,10 +817,61 @@ def wrapper(args):
         salmon_cmd = ["salmon","quant","--validateMappings","-l","A",
                       "-i",out_dir+"res_distrib.all.real",
                       "-p",str(args.threads),
-                      "-1",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.shuffled.fasta",
-                      "-2",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.shuffled.fasta",
                       "-o",out_dir+"slmn.all.sample"+str(i)]
+        if args.paired:
+            salmon_cmd.extend(["-1",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.shuffled.fasta",
+                               "-2",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            salmon_cmd.extend(["-r",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01.shuffled.fasta"])
         subprocess.call(salmon_cmd)
+
+    # now running kallisto
+    for i in range(num_samples):
+        klst_cmd = ["kallisto","quant",
+                    "-i",out_dir+"res_distrib.all.real.kallisto",
+                    "-o",out_dir+"klst.real.sample"+str(i),
+                    "-t",str(args.threads)]
+        if args.paired:
+            klst_cmd.extend([out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_1.shuffled.fasta",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            klst_cmd.extend(["--single",out_dir+"res_distrib.real.sample"+str(i)+"/sample_01.shuffled.fasta"])
+        subprocess.call(klst_cmd)
+        klst_cmd = ["kallisto","quant",
+                    "-i",out_dir+"res_distrib.all.real.kallisto",
+                    "-o",out_dir+"klst.real_nonint.sample"+str(i),
+                    "-t",str(args.threads)]
+        if args.paired:
+            klst_cmd.extend([out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_1.shuffled.fasta",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            klst_cmd.extend(["--single",out_dir+"res_distrib.real_nonint.sample"+str(i)+"/sample_01.shuffled.fasta"])
+        subprocess.call(klst_cmd)
+        klst_cmd = ["kallisto","quant",
+                    "-i",out_dir+"res_distrib.all.real.kallisto",
+                    "-o",out_dir+"klst.real_int.sample"+str(i),
+                    "-t",str(args.threads)]
+        if args.paired:
+            klst_cmd.extend([out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_1.shuffled.fasta",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            klst_cmd.extend(["--single",out_dir+"res_distrib.real_int.sample"+str(i)+"/sample_01.shuffled.fasta"])
+        subprocess.call(klst_cmd)
+        klst_cmd = ["kallisto","quant",
+                    "-i",out_dir+"res_distrib.all.real.kallisto",
+                    "-o",out_dir+"klst.real_pol.sample"+str(i),
+                    "-t",str(args.threads)]
+        if args.paired:
+            klst_cmd.extend([out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_1.shuffled.fasta",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            klst_cmd.extend(["--single",out_dir+"res_distrib.real_pol.sample"+str(i)+"/sample_01.shuffled.fasta"])
+        subprocess.call(klst_cmd)
+        klst_cmd = ["kallisto","quant",
+                    "-i",out_dir+"res_distrib.all.real.kallisto",
+                    "-o",out_dir+"klst.all.sample"+str(i),
+                    "-t",str(args.threads)]
+        if args.paired:
+            klst_cmd.extend([out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_1.shuffled.fasta",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01_2.shuffled.fasta"])
+        else:
+            klst_cmd.extend(["--single",out_dir+"res_distrib.all.sample"+str(i)+"/sample_01.shuffled.fasta"])
+        subprocess.call(klst_cmd)
 
     # todo: the problem is with the intronic loci... Those should only be inside the real loci which have been selected...
     # how do we do that???
@@ -776,6 +921,10 @@ def main(args):
                         required=True,
                         type=int,
                         help="read length")
+    parser.add_argument("--paired",
+                        required=False,
+                        action='store_true',
+                        help="Whether to simulate paired reads")
 
     parser.set_defaults(func=wrapper)
     args=parser.parse_args()

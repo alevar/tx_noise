@@ -18,7 +18,7 @@ simulate_experiment(args[1],
 					fold_changes=1,
 					strand_specific=TRUE,
 					readlen=as.numeric(args[3]),
-					paired=TRUE,
+					paired=as.logical(as.numeric(args[5])), # args[5] should be a character anything other than 0
 					error_rate=0.004,
 					reads_per_transcript=readspertx,
 					num_reps=c(1,0),
