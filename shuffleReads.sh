@@ -3,7 +3,7 @@
 if [ "$#" -eq 2 ]; then
 	echo "shuffling single-end mode"
 	if1=${1}
-	of1=${3}
+	of1=${2}
 	paste ${if1} | paste - - | shuf | awk -v a=${of1} -F'\t' '{OFS="\n"; print $1,$2 > a}'
 elif [ "$#" -eq 4 ]; then
 	echo "shuffling paired-end mode"

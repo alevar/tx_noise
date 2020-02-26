@@ -10,6 +10,12 @@ awk -F '\t|ID=|;' '$3=="transcript" {print $10}' chess2.2_assembly.gff | sort | 
 # get IDs of ALL transcripts that have a full match to some transcript in chess2.2 assembly
 awk -F '\t' '$3=="="' chess2.2.assembly_2_ALL.combined.gffcompare_report.ALL.combined.gtf.tmap | cut -f5 | awk '{gsub(/\|/,"\n")}1' | sort | uniq > ALL.combined.IDs.gffcmp.complete.match.from.chess2.2
 
+--------
+Here we need to start rebuilding the dataset
+1. search for intronic and splicing only in the real loci - NEED TO GET LOCUS IDs for these
+2. At the end we might end up with fewer transcripts than 30 mil, since a lot might get discarded - which is fine. However the results should be more consistent as a result
+--------
+
 # unite IDs of only identified complete matches for chess
 comm -13 chess2.2.IDs.gffcmp.complete.match.from.ALL.combined chess2.2.IDs > chess2.2.IDs.olny.in.chess2.2
 
