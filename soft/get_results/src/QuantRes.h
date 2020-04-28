@@ -72,6 +72,7 @@ public:
                   std::to_string(base_elen)+","+
                   std::to_string(num_sim_reads)+","+
                   std::to_string(sim_tpm)+","+
+                  std::to_string(strg_elen)+","+
                   std::to_string(num_strg_reads)+","+
                   std::to_string(strg_tpm)+","+
                   std::to_string(slmn_reads)+","+

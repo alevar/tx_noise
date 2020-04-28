@@ -221,7 +221,7 @@ void QuantRes::load_strg(std::string strgFP){
 
 void QuantRes::write(std::string outFP){
     std::ofstream out_ss(outFP.c_str());
-    out_ss<<"tid,len,elen_true,elen_base,sim_nreads,sim_tpm,strg_nreads,strg_tpm,slmn_nreads,slmn_tpm,klst_nreads,klst_tpm"<<std::endl;
+    out_ss<<"tid,len,elen_true,elen_base,sim_nreads,sim_tpm,strg_elen,strg_nreads,strg_tpm,slmn_nreads,slmn_tpm,klst_nreads,klst_tpm"<<std::endl;
 
     for(auto& rec : quant_res){
         if(rec.second.base || rec.second.real){
@@ -250,16 +250,19 @@ void QuantRes::compute_tpm(){
             continue;
         }
     }
+    std::cout<<"rpk: "<<rpk_sum<<std::endl;
     // next compute the per million scaling factor
     float pmf = rpk_sum/1000000.0;
+    std::cout<<"pmf: "<<pmf<<std::endl;
     // next use pmf to get new TPM values
-    for(auto tx : this->quant_res){ // for each transcript
+    for(auto &tx : this->quant_res){ // for each transcript
         if(tx.second.num_sim_reads>0){ // if reads were simulated for this transcripts whether real, intronic, splicing or intergenic
             tx.second.set_sim_tpm(tx.second.get_rpk()/pmf);
+//            std::cout<<"tpm: "<<tx.second.sim_tpm<<std::endl;
         }
-        else if(tx.second.base){ // if empty transcript but is part of the base annotation
-            tx.second.set_sim_tpm(tx.second.get_rpk()/pmf);
-        }
+//        else if(tx.second.base){ // if empty transcript but is part of the base annotation
+//            tx.second.set_sim_tpm(tx.second.get_rpk()/pmf);
+//        }
         else{ // otherwise we just skip
             continue;
         }
